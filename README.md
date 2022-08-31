@@ -1,0 +1,1 @@
+This project is a continually incrementing one to track my learning in Javascript. The goal is to showcase what I've picked up via Pluralsight paid courses of JS in their JS pathway. 
