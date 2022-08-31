@@ -1,1 +1,3 @@
-This project is a continually incrementing one to track my learning in Javascript. The goal is to showcase what I've picked up via Pluralsight paid courses of JS in their JS pathway. 
+This project is a continually incrementing one to track my learning in Javascript. The goal is to showcase what I've picked up via Pluralsight paid courses of JS in their JS pathway.
+
+We use lite-server for development to have code update as soon as it's changed to avoid constant refreshing. The node-modules are here but if need be, package contains enough to just run "npm install" and the script to run the server via localhost is "npm run dev"
