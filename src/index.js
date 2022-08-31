@@ -1,3 +1,7 @@
+/**
+ * This IIFE simply sets up the intro of the home page
+ * We create an h1 here to do so, in the 'content' portion
+ */
 (function setupHome() {
   let contentArea = document.getElementById('content');
   let intro = document.createElement('h1');
