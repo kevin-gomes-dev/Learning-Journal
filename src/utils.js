@@ -26,3 +26,21 @@
   
 })(pageList);
 
+/**
+ * This function allows us to display anything by adding an element to the page.
+ * Each time this is called, another element is added to the page.
+ * Optionally, we can add the tag (type of element), default is h4.
+ * Optionally, we can add the id of the element, default is empty.
+ * Assumes a "content" div but we could easily change this if we want
+ * to create the div and set its id.
+ * @param {any} stuff The stuff we wish to display on the screen.
+ * @param {string} element The HTML element we want to enclose the stuff in.
+ * @param {string} id The ID to use to refer to this element.
+ */
+function show(stuff,element = 'h4',id = '') {
+  let contentArea = document.getElementById('content');
+  let newElement = document.createElement(element);
+  newElement.id = id;
+  newElement.innerHTML = stuff;
+  contentArea.appendChild(newElement);
+}
