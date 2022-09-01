@@ -43,4 +43,5 @@ function show(stuff,element = 'h4',id = '') {
   newElement.id = id;
   newElement.innerHTML = stuff;
   contentArea.appendChild(newElement);
+  return stuff;
 }
