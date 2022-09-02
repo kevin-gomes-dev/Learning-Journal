@@ -1,3 +1,4 @@
+'use strict';
 /**
  * This IIFE simply sets up the intro of the home page
  * We create an h1 here to do so, in the 'content' portion
