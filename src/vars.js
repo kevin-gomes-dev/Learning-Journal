@@ -7,6 +7,23 @@
  * Cannot delete a function
  * Controls what "this" means in certain contexts
  */
+
+// Here is the object we will use when needing 1.
+let sampleObj = {
+  name: "Kevin",
+  age: "26",
+  likes: "Self-expression",
+  dislikes: "Repression",
+  siblings: 4,
+  isAdult: function () {
+    return this.age >= 18;
+  },
+  testThis: function () {
+    return JSON.stringify(this);
+  },
+};
+
+// Intro text
 show("Look at vars.js to see how this page is setup.", "h1");
 
 // Template Literal
@@ -17,6 +34,9 @@ show(taggedTempLit());
 
 // Let VS Const
 show(letVsConst());
+
+// Destructure functionality
+show(destruct());
 
 /**
  * This just returns a template literal
@@ -75,6 +95,7 @@ function letVsConst() {
   const constObj = {name: 'paul',age: 22};
   let result = `Let VS Const: Original vars are 
   x: ${x}, y: ${y}, mul: ${mul}, constObj: ${JSON.stringify(constObj)} `;
+  // Try changing x and y
   try {
     result += `Attempting to change x and y: `;
     x = 4;
@@ -84,6 +105,7 @@ function letVsConst() {
   catch (e) {
     result += e + ' ';
   }
+  // Try changing mul
   try {
     result += `Attempting to change const mul: `;
     mul = 4;
@@ -92,6 +114,7 @@ function letVsConst() {
   catch (e) {
     result += e + ' '
   }
+  // Try changing constObj
   try {
     result += `Attempting to change const constObj: `;
     constObj = {name: 'sam',age: 22};
@@ -100,6 +123,7 @@ function letVsConst() {
   catch (e) {
     result += e + ' ';
   }
+  // Try changing property of constObj
   try {
     result += `Attempting to change property of obj referenced by const constObj: `;
     constObj.age = 9;
@@ -111,3 +135,6 @@ function letVsConst() {
   return result;
 }
 
+function destruct() {
+  
+}

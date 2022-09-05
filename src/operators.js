@@ -169,7 +169,7 @@ function exceptionHandling() {
 
 /**
  * Does exception throwing
- * @returns Resulting string at end
+ * @returns {string} Resulting string at end
  */
 function exceptionThrowing() {
   let result = "";

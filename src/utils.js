@@ -38,7 +38,7 @@
  * @param {string} element The HTML element we want to enclose the stuff in.
  * @param {string} id The ID to use to refer to this element.
  */
-function show(stuff,element = 'h4',id = undefined) {
+function show(stuff,element = 'h3',id = undefined) {
   let contentArea = document.getElementById('content');
   let newElement = document.createElement(element);
   if (id) {newElement.id = id};
