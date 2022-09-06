@@ -38,6 +38,9 @@ show(letVsConst());
 // Destructure functionality
 show(destruct());
 
+// Symbols
+show(symbols());
+
 /**
  * This just returns a template literal
  * @param {string} string The sample string to display
@@ -78,7 +81,7 @@ function italics(strings, ...values) {
  */
 function taggedTempLit() {
   let str1 = 'italic';
-  let str2 = 'variable';
+  let str2 = 'expression';
   let str3 = 'evaluated';
   return italics `Tagged Template Literal: This template lit
    is ${str1} for every ${str2} that is ${str3}`;
@@ -136,5 +139,22 @@ function letVsConst() {
 }
 
 function destruct() {
-  
+  let result = 'Destructure: ';
+  let a = [23,'sam'];
+  let [id = "NO-ID",name = "NO-NAME",age = "NO-AGE",...others] = a;
+  result += `id: ${id}, name: ${name}, age: ${age}, ...others: ${others}`;
+  return result;
+}
+
+function symbols() {
+  let result = 'Symbols: ';
+  let sym1 = Symbol.for('test');
+  let sym2 = Symbol('test');
+  let sym3 = Symbol.for('test');
+  result += `${sym1.toString()}, ${sym2.toString()}, ${sym3.toString()} `;
+  result += `1 and 2 =? ${sym1===sym2}. 1 and 3 =? ${sym1===sym3} `;
+
+  let obj = {name: 'Barry',[sym1]: 90};
+  result += `Hidden property: ${obj[sym3]}`;
+  return result;
 }
