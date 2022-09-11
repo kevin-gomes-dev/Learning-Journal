@@ -44,7 +44,7 @@ show(symbols());
 /**
  * This just returns a template literal
  * @param {string} string The sample string to display
- * @returns String
+ * @returns {string} String
  */
 function tempLit(string) {
   return `Template Literal: Param passed was ${string}`;
@@ -55,7 +55,7 @@ function tempLit(string) {
  * making each value in it italic
  * @param {string} strings The strings being passed
  * @param  {...any} values The values evaluated in the temp literal
- * @returns Resulting string with modifications made to values
+ * @returns {string} Resulting string with modifications made to values
  */
 function italics(strings, ...values) {
   let result = "";
@@ -90,7 +90,7 @@ function taggedTempLit() {
 /**
  * Shows constraints between let and const. We do not show scope,
  * but scope is of course block scope.
- * @returns Resulting string after all try catch blocks have been done
+ * @returns {string} Resulting string after all try catch blocks have been done
  */
 function letVsConst() {
   let x = 3, y = 3;
@@ -138,6 +138,11 @@ function letVsConst() {
   return result;
 }
 
+/**
+ * This function uses destructing to create variables from an array
+ * It also uses default values and spread operator for other items
+ * @returns {string} Result
+ */
 function destruct() {
   let result = 'Destructure: ';
   let a = [23,'sam'];
@@ -146,6 +151,10 @@ function destruct() {
   return result;
 }
 
+/**
+ * This function uses Symbols and tests some aspects of using them.
+ * @returns {string} Result
+ */
 function symbols() {
   let result = 'Symbols: ';
   let sym1 = Symbol.for('test');
@@ -155,6 +164,7 @@ function symbols() {
   result += `1 and 2 =? ${sym1===sym2}. 1 and 3 =? ${sym1===sym3} `;
 
   let obj = {name: 'Barry',[sym1]: 90};
+  // Note we can use sym1 or sym3 since they are the same
   result += `Hidden property: ${obj[sym3]}`;
   return result;
 }
