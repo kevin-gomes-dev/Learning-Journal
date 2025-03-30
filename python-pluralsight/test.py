@@ -23,7 +23,7 @@ def add_acro(acro,defi):
         file.write(str_to_write)
     print(f'Successfully wrote acronym {acro} and definition {defi}')
     
-def main():
+def acro_program():
     while True:
         inp = input("Enter mode. 1 for find, 2 for add: ")
         if inp == "":
@@ -39,27 +39,33 @@ def main():
             print("Input given doesn't correspond to mode.")
         print()
 
-# if __name__ == "__main__":
-#     main()
-path = r'C:\Users\Kevin\Desktop\stuff\MN\subs'
-path = os.path.normpath(os.path.realpath(path))
+def move_subs():
+    path = input("Enter path\n")
+    path = os.path.normpath(os.path.realpath(path))
 
-dirs = os.walk(path)
-for i,j,k in dirs:
-    # Get S/E
-    p = i.split('S')
-    for x in p:
-        try:
-            num = int(x[3:5])
-            new_name = str(num).zfill(2) + "_eng.ass"
-            old_path = i + "\\track4_eng.ass"
-            new_path = i + "\\" + new_name
-            # old_path = ""
-            # new_path = ""
-            print("OLD:",old_path)
-            print("NEW:",new_path)
-            os.rename(old_path,new_path)
-            print("Done!")
-        except:
-            print("Couldn't print int of:",x)
-    print("===================================")
+    dirs = os.walk(path)
+    for i,j,k in dirs:
+        # Get S/E
+        p = i.split('S')
+        for x in p:
+            try:
+                num = int(x[3:5])
+                new_name = str(num).zfill(2) + "_eng.ass"
+                old_path = i + "\\track4_eng.ass"
+                new_path = i + "\\" + new_name
+                # old_path = ""
+                # new_path = ""
+                print("OLD:",old_path)
+                print("NEW:",new_path)
+                # Uncomment when ready to rename/move
+                # os.rename(old_path,new_path)
+                print("Done!")
+            except:
+                print("Couldn't print int of:",x)
+        print("===================================")
+    
+def main():
+    acro_program()
+    
+if __name__ == "__main__":
+    main()
