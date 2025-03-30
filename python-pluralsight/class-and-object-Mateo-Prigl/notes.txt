@@ -1,0 +1,3 @@
+__str__ - Default print for obj
+__init__ - constructor
+classes take self as first param for all methods. Doesn't have to be 'self' but do it

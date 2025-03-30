@@ -2,6 +2,9 @@ class Employee():
     def __init__(self,fname,lname):
         self.fname = fname
         self.lname = lname
+    
+    def __str__(self):
+        return f'{self.fname} {self.lname}'
 
 class HourlyEmployee(Employee):
     def __init__(self, fname, lname,weekly_hours,hourly_rate):
@@ -19,6 +22,9 @@ class SalaryEmployee(Employee):
     
     def calculate_paycheck(self):
         return self.salary/52
+
+    def increase_salary(self, percent):
+        self.salary += self.salary * (percent/100)
 
 class CommissionEmployee(SalaryEmployee):
     def __init__(self, fname, lname, salary,sales_num,com_rate):
