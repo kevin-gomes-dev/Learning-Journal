@@ -6,7 +6,7 @@ class Company:
         
     def add_employee(self, new_emp):
         self.employees.append(new_emp)
-        print("Successfully added %s" % new_emp,
+        print("Successfully added Employee.",
               f'First Name: {new_emp.fname}, Last Name: {new_emp.lname}')
         
     def display_employees(self):

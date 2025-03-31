@@ -1,0 +1,13 @@
+Classes and Object-oriented Programming in Python 3 - Mateo Prigl
+-----------------------------------------------------------------
+Classes take self as first param for all methods. Doesn't have to be 'self' but do it
+Every class has a __dict__ to get the inner dictionary. This is where it stores data. Think JSON. Defining the self.x and others simply fills the __dict__ of that instance. Instance Attributes is another word for it.
+__new__ - is called every time we make an instance. Reserves memory, then passes to __init__
+__str__ - Default print for obj, returns string which can be used elsewhere, used in str(o)
+__init__ - Constructor
+__add__ - What happens when you do obj1 + obj2. In context of employees, doesn't make sense.
+__repr__ - String representation of object, to be used by devs, more technical. Ideally have it be such that using eval(__repr__) would create the obj. Interactive mode uses __repr__
+
+The __example__ methods are called Dunder (or Magic) Methods (double underscore). They implement an interface that allows the shorthand to be used (obj1 + obj2, print(obj), etc). Usually called indirectly, like new passing to init, and str called from printing. With print, if __str__ not definted, use __repr__. If both gone, will use default.
+
+-----------------------------------------------------------------
