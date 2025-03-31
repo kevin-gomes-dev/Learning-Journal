@@ -33,19 +33,37 @@ class HourlyEmployee(Employee):
 class SalaryEmployee(Employee):
     def __init__(self, fname, lname, salary):
         super().__init__(fname, lname)
-        self.set_salary(salary)
+        self.salary = salary
+        self._monthly_salary = None
     
-    def set_salary(self,salary):
+    # Use class decorater "property" so when accessing e.salary, calls this instead
+    @property
+    def salary(self):
+        return self._salary
+    
+    # When doing something like e.salary = 3, call this instead with salary = 3.
+    # Note that whenever salary is changed, update anything reliant on it.
+    @salary.setter
+    def salary(self,salary):
         if salary < 1000:
             raise ValueError(f'{salary} is less than minimum wage salary, $1,000')
         else:
-            self.salary = salary
+            self._salary = salary
+            self._monthly_salary = None # Removes cache, will be computed again
+    
+    # Computed property. Note it isn't cached, so every time it's rerquested, computes.
+    # ^ Cached by adding _monthly_salary data member in init and the if condition here.
+    @property
+    def monthly_salary(self):
+        if self._monthly_salary is None:
+            self._monthly_salary = self.salary/12
+        return self._monthly_salary
     
     def calculate_paycheck(self):
         return self.salary/52
 
     def increase_salary(self, percent):
-        self.salary += self.salary * (percent/100)
+        self.salary = self.salary + self.salary * (percent/100)
         
     def __str__(self):
         return super().__str__() + f' Salary: {self.salary}'

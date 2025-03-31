@@ -1,13 +1,38 @@
 Classes and Object-oriented Programming in Python 3 - Mateo Prigl
 -----------------------------------------------------------------
+Module 3: Instantiating Custom Classes
 Classes take self as first param for all methods. Doesn't have to be 'self' but do it
 Every class has a __dict__ to get the inner dictionary. This is where it stores data. Think JSON. Defining the self.x and others simply fills the __dict__ of that instance. Instance Attributes is another word for it.
-__new__ - is called every time we make an instance. Reserves memory, then passes to __init__
+__new__ - is called every time we make an instance. Reserves/allocates memory, then passes to __init__
 __str__ - Default print for obj, returns string which can be used elsewhere, used in str(o)
 __init__ - Constructor
 __add__ - What happens when you do obj1 + obj2. In context of employees, doesn't make sense.
 __repr__ - String representation of object, to be used by devs, more technical. Ideally have it be such that using eval(__repr__) would create the obj. Interactive mode uses __repr__
 
 The __example__ methods are called Dunder (or Magic) Methods (double underscore). They implement an interface that allows the shorthand to be used (obj1 + obj2, print(obj), etc). Usually called indirectly, like new passing to init, and str called from printing. With print, if __str__ not definted, use __repr__. If both gone, will use default.
+
+Module 4: Managing Attribute Access
+Abstraction: Not needing users of our modules to see internals to use, simply use interface.
+Encapsulation: Grouping all the data of the module together as one big "unit".
+
+Access modifiers public and private are not in python. To solve problem of misuse, we trust users to know not to directly set data members. As convention, prepend private data with undersscore. To make it more obvious, use Name Mangling. Prepend with 2 underscores. When trying to use, you will get AttributeError saying it doesn't exisit (even though it does). If user wants to access still, can use obj._<ClassName>.__<Data>
+
+Attribute management. Use @property inistead of getters and setters. @proptery is a class decorator that uses descriptor protocol. You can have:
+@property
+def x(self):
+    return self._x
+
+@x.setter
+def x(self,value):
+    self._x = value
+
+Now, wherever in code the property "x" (note the name, not the _x) is accessed, it will call those methods based on context. If e.x, call getter and return e._x. If e.x = 2, call setter with value = 2, and set _x = value. If updating bunch of code that uses name of property directly and you wanted everything to first go through a new setter, doing this means you can leave all that code alone as it will now route to yours. Most important is the name def x, as it will only look for code that access "x". So if I had def a(self): then anything that said e.a would call that function, which could get e._x. Can get super confusing with bad design, so keep like-minded things together. Could also make empty property def x(self): pass, then use @x.getter and @x.setter. But using @proptery then def x(self): as the getter works.
+
+@property can be used to make something write-only, for example passwords. Shouldn't be able to read, only change. To get it, you'd probably call something that accesses some hash.
+
+Usem fact that @property can do literally anything to use computed data, which is not a data member but derived from them. EX: @property def sum(self): return self.x + self.y. Now if I say obj.sum, it'll give me that, and getting x and y could also go through a @property of its own.
+
+Module 5: Implementing Class Inheritance
+
 
 -----------------------------------------------------------------

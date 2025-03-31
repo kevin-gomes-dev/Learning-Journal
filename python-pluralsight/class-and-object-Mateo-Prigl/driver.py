@@ -18,3 +18,8 @@ employees = [ea,ha,sa,ca]
 for i in employees:
     company.add_employee(i)
 company.display_employees()
+
+# Check that salary updates are working
+print(f'Salary: {sa.salary}, Monthly: {sa.monthly_salary}')
+sa.salary = 9000
+print(f'After Salary: {sa.salary}, Monthly: {sa.monthly_salary}')
