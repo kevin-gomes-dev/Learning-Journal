@@ -1,25 +1,21 @@
-from company import Company
 from employee import *
-company = Company()
-# for i in range(3):
-#     company.add_employee(Employee("K","G" + str(i)))
-# company.display_employees()
-# a = Employee("A","A2")
-# b = Employee("B","B2")
-# print(str(a))
-# print(repr(a))
-# c = eval(repr(a))
-# print(b)
-ea = Employee("Normal","Employee")
-ha = HourlyEmployee("Hourly","Employee",20,15)
-sa = SalaryEmployee("Salary","Emlpoyee",1500)
-ca = CommissionEmployee("Commission","Employee",1000,4,5)
-employees = [ea,ha,sa,ca]
-for i in employees:
-    company.add_employee(i)
-company.display_employees()
 
-# Check that salary updates are working
-print(f'Salary: {sa.salary}, Monthly: {sa.monthly_salary}')
-sa.salary = 9000
-print(f'After Salary: {sa.salary}, Monthly: {sa.monthly_salary}')
+# e = Employee("Employee",10000)
+# t = Tester("Tester",5000)
+# t2 = Tester("Tester 2",2000)
+# t.increase_salary(20)
+
+# print(t.salary)
+# t.run_tests()
+# t2.run_tests()
+# d = Developer("Dev",5000,"Flask")
+# t.increase_salary(20)
+# d.increase_salary(20,30)
+# print(t.salary)
+# print(d.salary)
+# print(d.framework)
+
+# Slots
+e = Developer("Frame")
+# print(e.__dict__)
+# print(e.__slots__)

@@ -1,1 +1,1 @@
-Learning journal for various pluralsight and other studies in coding.
+Learning journal for various pluralsight and other studies in coding. Files are usually modified multiple times, completely changing. Use git history to see contents but mostly useless since it's done to cement knowledge.

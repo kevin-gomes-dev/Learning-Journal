@@ -1,9 +1,16 @@
 Classes and Object-oriented Programming in Python 3 - Mateo Prigl
 -----------------------------------------------------------------
+Module 2: Everything is an Object
+-----------------------------------------------------------------
+__class__ - Gives the class of an instance
+__dict__ - Gives JSON representation (dictionary in python terms)
+__new__ - is called every time we make an instance. Reserves/allocates memory, then passes to __init__
+__init__ - By default, simply returns an object of type <Class>
+
 Module 3: Instantiating Custom Classes
+-----------------------------------------------------------------
 Classes take self as first param for all methods. Doesn't have to be 'self' but do it
 Every class has a __dict__ to get the inner dictionary. This is where it stores data. Think JSON. Defining the self.x and others simply fills the __dict__ of that instance. Instance Attributes is another word for it.
-__new__ - is called every time we make an instance. Reserves/allocates memory, then passes to __init__
 __str__ - Default print for obj, returns string which can be used elsewhere, used in str(o)
 __init__ - Constructor
 __add__ - What happens when you do obj1 + obj2. In context of employees, doesn't make sense.
@@ -12,6 +19,7 @@ __repr__ - String representation of object, to be used by devs, more technical. 
 The __example__ methods are called Dunder (or Magic) Methods (double underscore). They implement an interface that allows the shorthand to be used (obj1 + obj2, print(obj), etc). Usually called indirectly, like new passing to init, and str called from printing. With print, if __str__ not definted, use __repr__. If both gone, will use default.
 
 Module 4: Managing Attribute Access
+-----------------------------------------------------------------
 Abstraction: Not needing users of our modules to see internals to use, simply use interface.
 Encapsulation: Grouping all the data of the module together as one big "unit".
 
@@ -26,13 +34,38 @@ def x(self):
 def x(self,value):
     self._x = value
 
-Now, wherever in code the property "x" (note the name, not the _x) is accessed, it will call those methods based on context. If e.x, call getter and return e._x. If e.x = 2, call setter with value = 2, and set _x = value. If updating bunch of code that uses name of property directly and you wanted everything to first go through a new setter, doing this means you can leave all that code alone as it will now route to yours. Most important is the name def x, as it will only look for code that access "x". So if I had def a(self): then anything that said e.a would call that function, which could get e._x. Can get super confusing with bad design, so keep like-minded things together. Could also make empty property def x(self): pass, then use @x.getter and @x.setter. But using @proptery then def x(self): as the getter works.
+Now, wherever in code the property "x" (note the name, not the _x) is accessed, it will call those methods based on context. If e.x, call getter and return e._x. If e.x = 2, call setter with value = 2, and set _x = value.
+If updating bunch of code that uses name of property directly and you wanted everything to first go through a new setter, doing this means you can leave all that code alone as it will now route to yours. Most important is the name def x, as it will only look for code that access "x". So if I had def a(self): then anything that said e.a would call that function, which could get e._x.
+Can get super confusing with bad design, so keep like-minded things together. Could also make empty property def x(self): pass, then use @x.getter and @x.setter. But using @proptery then def x(self): as the getter works.
 
 @property can be used to make something write-only, for example passwords. Shouldn't be able to read, only change. To get it, you'd probably call something that accesses some hash.
 
 Usem fact that @property can do literally anything to use computed data, which is not a data member but derived from them. EX: @property def sum(self): return self.x + self.y. Now if I say obj.sum, it'll give me that, and getting x and y could also go through a @property of its own.
 
 Module 5: Implementing Class Inheritance
+-----------------------------------------------------------------
+Inheritance: An object is-a different object. Takes all methods data etc. from super.
+Polymorphism: Object could have same methods but different "forms" or behaviors. Move for a dog could be different from Move for a fish.
+To inherit, class E(T) makes E a child of T. All methods and constructor are inherited.
+To override, redefine the method with the same name. Since python is dynamic, can be any params count. Other languages have overload to handle param count.
+Use super() to get access to the super class methods, params, etc.
 
+Since everything is object, you are always inheriting from class "object". Contains the default __ methods. Thus, defining the __ methods like __str__ and __init__ are just overridingi from object class.
 
+To check type, use isinstance(instsance, class) or issubclass(child,parent) (#1 is sub of #2)
+If you were to use methods that are only in Employee on children, it will still call them, making them "act" like Employee class.
+
+Exceptions all derive from BaseException. Each one can have children and they can have children. Example: ZeroDivisionError is a child or ArithmeticError, child of Exception, child of BaseException.
+
+super().method() is same as saying <SuperClass>.method(self). Cannot use self to call super method because self refers to whatever class is calling the method, which would call itself. Ex: Dev class increase_salary calling self.increase_salary, would just call itself. Infinite recursion.
+
+super().method() is prefered for Method Resolution Order, makes code dynamic. Hard coding the class name needs to change every time that class changes name or if the parent of our class changes to another class (cause now it'd still call the hardcoded class which is no longer a parent)
+
+Since objects use __dict__ to store stuff, we can optimize memory allocation. Use "Slots". It will use __slots__ instead of __dict__ and will only have the list of items you gave it, no dynamic adding of attribute. If I tried to say employee.title when the class didn't have one, with slots you can't. With dict it'd add it as normal. This allows for faster attribute access and less memory usage. Note that if parent doesn't use slots, then child will still have __dict__. Will just be empty if slots has all the init stuff. Otherwise the __dict__ won't evene be created.
+
+Python has multiple inheritance. People tend to avoid this. Makes code quickly confusing. Some languages use "Traits" instead. But python we use mostly for "Mixin" classes. For example, a method called has_slots(self). Could check if __slots__ exists via hasattr(self,"__slots__") as well as assert that __dict__ doesn't exist. Then any object that inherits other objects could additionally inherit ours just for that method.
+
+If have <Class>(class1, class2) and both super classes define same method, which one runs? Method Resolution Order, each class has a __mro__ which gives tuple that gives order methods are searched for. Will always start with class calling __mro__, and "object" at end. Uses C3 algorithm, first look at subs before looking upper. Also takes account of order of <class>(class1, class2). Will look at class1 before class2. However, remember that if any parent doesn't use __slots__, then the child will have a __dict__.
+
+Module 6: Accessing Class Attributes and Methods
 -----------------------------------------------------------------
