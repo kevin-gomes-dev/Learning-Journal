@@ -1,44 +1,35 @@
-# Super class in hierarchy
-class Employee():
-    __slots__ = ("name","salary")
-    def __init__(self, name, salary):
-        self.name = name
-        self.salary = salary
-    
-    def increase_salary(self,percent):
-        self.salary += self.salary * (percent/100)
+from dataclasses import dataclass
+# Old way
+# class Project:
+#     def __init__(self,name,payment,client):
+#         self.name = name
+#         self.payment = payment
+#         self.client = client
         
-    def has_slots(self):
-        print("In employee")
-        return hasattr(self,"__slots__")
+#     def __repr__(self):
+#         return (f'Project('
+#                 f'name={repr(self.name)},'
+#                 f'payment={repr(self.payment)},'
+#                 f'client={repr(self.client)})'
+#             )
 
-# Parent: Employee
-class Tester(Employee):
-    def run_tests(self):
-        print(f'Testing started by {self.name}...')
-        print('Tests done.')
+# New way, type hints but not enforced. Use mypy to check. Has default values
+# We can make it quick with p = Project() and defaults will be used
+# After 3.10, to use slots, just do slots=True. Before, have to define slots manually
+@dataclass(slots=True)
+class Project:
+    name: str = "name"
+    payment: int = "0"
+    client: str = "client"
     
-# Parent: Employee   
-# class Developer(Employee):
-#     def __init__(self,name,salary,framework):
-#         super().__init__(name,salary)
-#         self.framework = framework
+    # Can also do methods, etc cause it's still a class
+    def notify_client(self):
+        print(f'Notifying {self.client} of {self.name}')
+
+class Employee:
+    def __init__(self,name: str,age: int,salary: int,project: Project = Project()):
+        self.name = name
+        self.age = age
+        self.salary = salary
+        self.project = project # not a string
     
-#     def increase_salary(self, percent, bonus=0):
-#         super().increase_salary(percent)
-#         self.salary += bonus
-
-# For multiple inherit, anyone can use this. Not class specific
-class SlotsInspectorMixin:
-    # Need this to ensure children do not have empty dict if they use slots
-    __slots__ = ()
-    def has_slots(self):
-        print("In slots")
-        return hasattr(self,"__slots__")
-
-# Optimal using Slots
-class Developer(Employee, SlotsInspectorMixin):
-    # Value needs to be iterable with all instance attributes. Using tuple, could be list
-    __slots__ = ("framework")
-    def __init__(self,framework):
-        self.framework = framework

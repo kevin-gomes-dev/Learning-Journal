@@ -1,21 +1,10 @@
 from employee import *
 
-# e = Employee("Employee",10000)
-# t = Tester("Tester",5000)
-# t2 = Tester("Tester 2",2000)
-# t.increase_salary(20)
-
-# print(t.salary)
-# t.run_tests()
-# t2.run_tests()
-# d = Developer("Dev",5000,"Flask")
-# t.increase_salary(20)
-# d.increase_salary(20,30)
-# print(t.salary)
-# print(d.salary)
-# print(d.framework)
-
-# Slots
-e = Developer("Frame")
-# print(e.__dict__)
-# print(e.__slots__)
+# Use mypy to typecheck
+# p = Project("Pname","payment(int)","Cli")
+p = Project()
+e = Employee("emplo",24,20000,p)
+# e = Employee(2,1,2,3)
+print(e.project)
+# print(p.__dict__)
+print(p.__slots__)

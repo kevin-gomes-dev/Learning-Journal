@@ -40,7 +40,7 @@ Can get super confusing with bad design, so keep like-minded things together. Co
 
 @property can be used to make something write-only, for example passwords. Shouldn't be able to read, only change. To get it, you'd probably call something that accesses some hash.
 
-Usem fact that @property can do literally anything to use computed data, which is not a data member but derived from them. EX: @property def sum(self): return self.x + self.y. Now if I say obj.sum, it'll give me that, and getting x and y could also go through a @property of its own.
+Uses fact that @property can do literally anything to use computed data, which is not a data member but derived from them. EX: @property def sum(self): return self.x + self.y. Now if I say obj.sum, it'll give me that, and getting x and y could also go through a @property of its own.
 
 Module 5: Implementing Class Inheritance
 -----------------------------------------------------------------
@@ -69,3 +69,51 @@ If have <Class>(class1, class2) and both super classes define same method, which
 
 Module 6: Accessing Class Attributes and Methods
 -----------------------------------------------------------------
+When python sees a function or class, a new object is allocated in memory of the thing itself. Basically, function call allocates memory for the instance, but memory is also allocated for the function itself (its existence). Not true for languages like C++, where running code is compiled to binary ASM instructions and classes, if no instance exists, are not stored anywhere in memory (basically doing nothing)
+
+This means the class name itself (Employee) has a __dict__, which returns mappingproxy({'__dict__','__doc__',...}) which is seen as a read-only dictionary. __init__ and the methods we create are attributes of the object itself. Whereas data members are attributes of the instances. Since they are attributes, these 2 are equivalent:
+
+Employee.__dict__["some_func"](employee2,20) # Note self isn't implicit so we provide it
+employee2.some_func(20) # self is implicit with dot notation, just pass 20.
+
+Classes can have its own attributes, like __slots__. They are like constants, static. Static variables, methods, etc. for example minimum_wage could be a static, used across all employee instances and is the same throughout.
+
+When looking at attribute of instance, first its own __dict__, then the class __dict__.
+
+Methods are instance methods, i.e. each instance uses it with its own data. But to make a class method/static method, use decorator @classmethod. First param is cls, short for class. Ex:
+
+@classmethod
+def change_min_wage(cls,new_wage):
+    ...
+
+Common use case of static methods are factory functions. Example is date from datetime. For an employee, when adding one and they give name and dob, we can use static to get their actual age since this needs to be done for every new employee and is done exactly the same way. Instead of having it be calculated per instance. We can use cls() to instantiate new instance. Thus the new_employee class/static method can calculate age given dob, and then make an instance of an employee by using cls(name,age,cls.min_wage). We call these Factory Functions.
+
+Can also use @staticmethod. Almost the same, but doesn't get class or instance as first param. It's like a regular function, no relation to the class. Like utility methods that are based on class but don't need the class or instance to work. Literally just a placeholder, almost never used.
+
+Module 7: Using Data Classes
+-----------------------------------------------------------------
+Using instance of a class as an attribute of another class is called Composition. Like so:
+
+class Project: ...
+class Employee:
+def __init__(self,project,...):
+self.project = project # This is an instance of type Project
+
+inheritance is is-a. Composition is more a has-a. Employee has-a project, but developer is-a employee.
+
+When making classes, the init is typically just assigning self.x to its params. It's annoying to create an init of each class, so we have Data Classes to alleviate that.
+
+from dataclasses import dataclass
+Then you can say:
+@dataclass
+class Project:
+    name: str
+    payment: int
+    client: str
+^ That will be the same as making class with init, etc. Provides init and repr implicitly.
+
+Since python doesn't have types (dynamically typed), can use type checking/hinting to "enforce" types. Can use for parameters, return values, class attributes, etc. Could use Any in data classes by importing: from typing import Any then use Any instead of str,int,etc.
+
+3.10 and up, to use slots: @dataclass(slots=True). Can use default values with dataclass, like so: name: str = "default_str". In params, would be (name: str = "s")
+
+Next steps: SOLID principles, abstract classes (no instances), kind of like interface, bundle of functionality, designed to be extended. Learn docstrings, documentation ("""doc"""). Even deeper, learn Metaclasses, Descriptors, and Class decorators.
