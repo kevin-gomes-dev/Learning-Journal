@@ -1,0 +1,32 @@
+Module 2: Finding Files
+-----------------------------------------------------------------
+fnmatch - module for filename matching with pattern using regex
+Can use instead of manually going through list of chars in string
+
+from pathlib import Path - module/class to do file operations on file paths.
+Has support for posix and windows style paths. Handles all of that neatly.
+Has glob, which matches patterns for the Path.
+
+Module 3: Working with Files and Folders
+-----------------------------------------------------------------
+from datetime import datetime - the class we use for dates and times. We use it to get the modified date/time of files.
+datetime.fromtimestamp(timestamp) - we use with the os.stat of a DirEntry.
+Our get_date function just handles formatting the datetime object we get.
+
+DirEntry (https://docs.python.org/3/library/os.html#os.DirEntry) - This is gotten from os.scandir(Path). When giving path, we get a generator of DirEntry(s).
+os.stat (https://docs.python.org/3/library/os.html#os.stat) - Gives us attributes of a file. We instead use DirEntry.stat(). Normally we'd say os.stat(DirEntry), but stat is a method of DirEntry so we can use it instead of the formal way. In the stats, one info is the modified timestamp, which is st_mtime attribute of the DirEntry class.
+
+Basically, Path(src) allows us to use the path as an object with os methods.
+
+os.stat_result (from os.stat) is where we get attributes from. https://docs.python.org/3/library/os.html#os.stat_result
+
+Definitions for DirEntry, stat_result etc are in __init__.pyi.
+
+os.walk(path) - given a path, will get the root, each sub-dir, and each file. Basically traverse.
+
+shutil - utility for copying files. 
+
+os.rename can be used to move files too. shutil is just a better way as it handles a bunch of other stuff. os.remove should be inside a try block almost always, as there's a chance you could have an OSError exception. Then use except OSError as e: and do whatever with it.
+
+Module 4: Archiving Files
+-----------------------------------------------------------------
