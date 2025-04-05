@@ -30,3 +30,14 @@ os.rename can be used to move files too. shutil is just a better way as it handl
 
 Module 4: Archiving Files
 -----------------------------------------------------------------
+Create and edit zip files with zipfile module. Use namelist to check if file is already inside before adding via zipfile.write.
+
+archive open via zipfile.ZipFile(zipfile_path,option). Usually put it as archive. If 'r', read only. When reading, archive.getinfo(file) gives size and other info about any file in the zip.
+
+archive.extract takes a ZipInfo. That is gotten from archive.getinfo. Note that extract doesn't mean to take it out, just to take a copy of it. 
+Documenting is great. To document, here's an example function:
+
+def func(param1: str, param2: int) -> list[str]:
+return ["a","b"]
+
+The -> signals return type, the : str signals type of param. Will show up in intellisense and any other helping part of an IDE. Huge time saver instead of looking for docs for the name of functions all the time.
