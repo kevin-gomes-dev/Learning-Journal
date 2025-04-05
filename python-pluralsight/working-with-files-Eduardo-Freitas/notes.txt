@@ -41,3 +41,48 @@ def func(param1: str, param2: int) -> list[str]:
 return ["a","b"]
 
 The -> signals return type, the : str signals type of param. Will show up in intellisense and any other helping part of an IDE. Huge time saver instead of looking for docs for the name of functions all the time.
+
+To have multiple return types, seperate with |. Like -> str | list[str] | list[list[str]]
+
+Module 5: Reading and Writing Files
+-----------------------------------------------------------------
+with open(...), when newline=None, takes all line endings and translates to \n. If it's ='', then it does the same but returns to caller untranslated. Use with instead of opening manually so it auto closes, avoids memory leaks.
+
+With text files, easy as opening and reading. Writing, just change the mode and put what you want. Simple.
+
+CSV files, use csv module. For reading, use csv.reader(file,[optional options]). First I like to get the delimiter and header from the file instead of manually looking for it in the file. Makes it more dynamic and automated. Can be done with csv.Sniffer like so (could use less lines):
+
+with open(path) as csv_f:
+    # First get our info. Could have combined it all into one line but wanted to show.
+    raw_text = csv_f.read()
+    # Rewind back to start now that we already have our info for the sniffer
+    csv_f.seek(0)
+    sniffer = csv.Sniffer()
+    sniffed_file = sniffer.sniff(raw_text)
+    has_header = sniffer.has_header(raw_text)
+    delimiter = sniffed_file.delimiter
+
+Problem of course is we end up reading the file twice, once to get the info and the other time to actually process it. I don't know if there's another analysis tool within csv module to do this without reading the file, because to know what's in it, you have to look at it.
+
+Then use that when reading. So make a reader using file object (which, to make, you have to use with open() as ...) and then that reader will be your rows. Afterwards, for each row, do whatever. To access a column, it'd be the row at column x. So rows[1][3] returns column 4 at row 2.
+
+To iterate:
+for row in rows:
+    blah
+    for column in row:
+        blah
+
+Writing is simple: just use csv.writer, give the delimiter and anything else you want, and writerow or writerows.
+
+XML files, use xml module. In particular, xml.etree.ElementTree. When using ET.parse(file), we don't need to use with open(...) as ... because parse gives us everything. We use the root to start at the base of the tree, and work our way through the branches (literally a metaphor of a tree). Each branch of course could have other branches. Each branch also could have leaves (items? elements?).
+
+ET.parse(file) gives us ElementTree[Element[str]], so a list of Element[s]. tree.getroot() gives Element[str]. From there, we can get attrib, keys, etc. So this is the level we want to recurse on?
+
+The wording in code wasn't really standard, here is standard naming for XML/node based. But it's really obvious if you think more literally of the metaphor rather than in context of coding.
+
+Child Node: (what I was considering a branch) A node after another node in tree.
+Branch: The line or connection between 2 nodes, representing a path between.
+Parent Node: Parent that could have any amount of children, and whose children could have children. This is considered the root node, or the base of the tree.
+Sibling Node: Nodes that have same parent (same indent)
+Leaf Node: Node without children (like leaf of a tree, nothing comes after)
+Internal Node: A node that has children. So a child node could be either an internal node or a leaf node, and it could also be a sibling node in either case. Think of family structure with grandparents and it'll make sense.

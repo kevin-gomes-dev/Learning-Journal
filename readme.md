@@ -2,3 +2,7 @@ Learning journal for various pluralsight and other studies in coding. Files are 
 
 python3 -m venv venv (or whatever path/folder name you want)
 source venv/bin/activate (or if on windows, source venv/Scripts/activate)
+
+Files often don't follow course exactly, instead modifying with what makes sense with ever changing knowledge. Done to both cement the knowledge (if you work with it in your own way, you'll actually have to think instead of copying what someone else is doing) and to better the code (often teachers don't account for things outside the scope. So go outsisde the scope/box and see what you can do).
+
+Also, ideally in code you should never have commented code or even long comments. They are included here to demonstrate thought process and for reference, no different than showing your process on a long math problem.
