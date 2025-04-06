@@ -1,6 +1,6 @@
 # Contains all our functions we're callling since the module is set up as just a bunch of demos.
 import xml.etree.ElementTree as ET
-import os, fnmatch, shutil, zipfile, csv,json
+import os, fnmatch, shutil, zipfile, csv,json,pickle,person
 from pathlib import Path
 from datetime import datetime
 
@@ -194,18 +194,23 @@ def write_csv(path,header,row):
 # Apparently these are just nodes?
 # Note that tabbing is done regardless of the file's tabbing. We could use tail to respect,
 # but since this is parser, we make it a specific format
-def parse_xml_et(path):
+
+# tab_enabled chooses whether to tab at all when printing
+# Return list of strings to be printed or handled
+def parse_xml_et(path,tab_enabled = True) -> list[str]:
+    lines = []
     # Our recursive helper func to go through all branches of all branches
     # Can't go infinite unless your file was infinite
-    def parse_branch(branch: ET.Element,tab_count = 1):
+    def parse_branch(branch: ET.Element,tab_count = 0,tab_enabled = True,lines = lines):
         # print(f'count: {tab_count}')
-        tab = '\t'*tab_count
+        tab = '\t'*tab_count if tab_enabled else ''
         # Now that we've established this branch is an endpoint, handle its data
         keys = branch.keys()
         # print(f'Branch keys: {keys}, branch tail: {repr(branch.tail)}')
         for k in keys:
             # print(f'Data for {branch.tag} (tag): {k} (key) = {branch.attrib[k]} (attrib[k])')
-            print(f'{tab}{k}: {branch.attrib[k]} | tag: {branch.tag}')
+            # print(f'{tab}{k}: {branch.attrib[k]} | tag: {branch.tag}')
+            lines.append(f'{tab}{k}: {branch.attrib[k]} | tag: {branch.tag}')
             # For every branch we could have x branches, and so on...
             # So consider a branch as a tree and parse it as if it's the root
             # for b in branch:
@@ -220,20 +225,109 @@ def parse_xml_et(path):
             # to ensure correct indentation. Then coming up the stack will do the -1
             # as many times as you had calls to the func. Hard to explain, use debugger to see
             tab_count+=1
-            parse_branch(b,tab_count)
+            parse_branch(b,tab_count,tab_enabled)
             # Once we're done with the branch, go back to normal indent from previous one.
             tab_count -= 1
     tree = ET.parse(path) # ET.ELementTree[Element[str]]
     root = tree.getroot() # ET.Element[str]
-    print(f'Root tag: {root.tag}, root keys: {root.keys()}')
+    lines.append(f'Root tag: {root.tag}, root keys: {root.keys()}')
     for branch in root:
-        parse_branch(branch)
+        # The first tab_enabled is the parameter, the second is the value
+        # gotten from the main func
+        parse_branch(branch,tab_enabled = tab_enabled)
+    return lines
 
-# Given the element, it's attribute and value, write it to the xml file in path        
+# Given the element, it's attribute and value, write it to the xml file in path
+# Create an element, give it an attribute and assign a value to it, then add that element
+# to the root of the tree. You can do a lot with the created element before adding to tree 
 def add_xml_element_et(path,ele,attr,value):
     tree = ET.parse(path)
     root = tree.getroot()
     child = ET.Element(ele)
+    child.attrib[attr] = value
+    child.tail = '\n'
+    root.append(child)
+    tree.write(path)
+    
+def change_xml_element_et(path,ele,attr,old_val,new_val):
+    tree = ET.parse(path)
+    root = tree.getroot()
+    # Find by matching element, attribute, and its old value. We need to know its old value?
+    # Is there a way to find it just with element and attribute? Could not be unique however...
+    # What if you had 2 of the same, but one inside one set of tags and the other in another?
+    # How would you change the 2nd compared to the first if ele, attr and val are same?
+    # .findall()? Does it go sequentially? .findall()[index]
+    child = root.find(f'./{ele}[@{attr}=\'{old_val}\']')
+    # Change key attr to be new value.
+    child.attrib[attr] = new_val
+    tree.write(path)
+
+# The parameter pretty allows us to not have to worry about recursively tabbing things
+# Dumps allows us to avoid finding everything
+def parse_json(path,pretty: int = None,sort = False):
+    with open(path) as json_file:
+        data = json.load(json_file)
+        dumps = (json.dumps(data,indent=pretty,sort_keys=sort))
+    return dumps
+
+# Update the data at item, pos, and key with value. Assumes item is an array
+# Changed to allow for non-lists
+# It's a bit sloppy...reads, changes the one value you want, then rewrites everything
+# Also can't handle inner objects within objects, seems to be base level 1.
+# Would require recursion. If what we're looking at is a dict, call again
+# Do this until it's not a dict, then change. But what if it's a list?
+# Call again and look within to find a base level item?
+
+# So comb through entire structure, deepest, then back one level, next deepest, etc.
+# Keep doing until you either find data[key] to exist or return that it doesn't
+# If it does, then ask if list or not. If not...I'll do this another time
+def update_json(path,item,pos: int = 0,key = None,value = None,log = False,indent = 4):
+    if key == None:
+        return 'No key given.'
+    with open(path) as json_file:
+        data = json.load(json_file)
+        try:
+            is_arr = type(data[item]) == list
+        except KeyError as e:
+            print(f'Error: no item {item} found in data.')
+            raise
+        if is_arr:
+            # Should be try catch cause it's possible it doesn't exist
+            print(f'Updating data item {item} at pos {pos}, key {key}, old value '
+                  f'{data[item][pos][key]} to '
+                  f'{value}') if log else ...
+            data[item][pos][key] = value
+        else:
+            print(f'Updating data item {item}, key {key}, old value '
+                  f'{data[item][key]} to '
+                  f'{value}') if log else ...
+            data[item][key] = value
+    with open(path,'w') as write_file:
+        json.dump(data,write_file,indent=indent)
+        print("Update complete") if log else ...
+        
+def serialize(obj):
+    pickled = pickle.dumps(obj,protocol=pickle.HIGHEST_PROTOCOL)
+    # print(f'Serialized object: \n{pickled}\n')
+    return pickled
+
+def deserialize(serial_obj):
+    unpickled = pickle.loads(serial_obj)
+    # print(f'Deserialized object: \n{unpickled}\n')
+    return unpickled
+
+def obj_to_file(path,obj):
+    # Other way is to open file and do pickle.dump(obj,protocol)
+    obj_bytes = serialize(obj)
+    with open(path,'wb') as file:
+        file.write(obj_bytes)
+    return obj_bytes
+
+# Lesson has obj in the param but immediately changes it in code without using.
+def file_to_obj(path):
+    with open(path,'rb') as file:
+        obj = pickle.load(file)
+    return obj
 
 def main():
     # Call whichever function to test. I used dir_roor and the like to stay in the root
@@ -251,6 +345,8 @@ def main():
     dir + '/01_file_test.csv',
     dir + '/01_file_test.txt']
     to_add = [dir + '/01_file.csv',dir + '/01_file.txt']
+    # Make things easy, ftr = Files To Read
+    ftr = os.path.join(dir_root,'files_to_read') + '/'
     # list_dir(dir)
     # print(ends_with(dir,"txt"))
     # print(starts_with(dir,"01"))
@@ -261,7 +357,8 @@ def main():
     # info_list = get_file_attr(dir)
     # for i in range(len(info_list[0])):
         # print(info_list[0][i],info_list[1][i],info_list[2][i],sep = " | ")
-        
+    
+    # mod 3
     # copy_file(dir + '/02_test.txt',dir + '/testing')
     # copy_dir(dir,dir + '/test')
     # move_files(dir + '/02_test.txt',dir + '/testing/02_test.txt')
@@ -270,6 +367,7 @@ def main():
     # move_files(dir_root + '/test',dir)
     # remove_file(dir + '/02_test.txt')
     
+    # mod 4
     # create_zip(dir_root + '/test_add_zip.zip',to_zip,'w')
     # add_zip(dir_root + '/test_add_zip.zip',to_add,'a')
     # zip_lst = read_zip(dir_root + '/test_add_zip.zip')
@@ -281,8 +379,7 @@ def main():
     #              all = True)
     # remove_file(dir_root + '/test_add_zip.zip')
     
-    # Make things easy
-    ftr = os.path.join(dir_root,'files_to_read') + '/'
+    # mod 5
     # print(read_text(ftr + 'backup.py'))
     # print(*read_text(ftr + 'backup.py',True))
     # OR
@@ -294,7 +391,23 @@ def main():
     # print('\n'.join(i for i in read_csv(ftr+'names.csv')))
     # write_csv(ftr+'test_write.csv',['name','age','sex','acct#'],['john','45','M','1234567890'])
     # print('\n'.join(i for i in read_csv(ftr+'test_write.csv')))
-    # parse_xml_et(ftr+'ef_author.xml')
-
+    # Create our own xml from base
+    # write_txt(ftr+'test.xml',read_text(ftr+'ef_author_mod.xml'))
+    # for i in parse_xml_et(ftr+'ef_author_mod.xml'):
+        # print(i)
+    # add_xml_element_et(ftr+'ef_author_mod.xml','TestTag','TestAttr','TestValue')
+    # change_xml_element_et(ftr+'ef_author_mod.xml','domain','name','TypeScript','TS')
+    # Create our own json from base
+    # write_txt(ftr+"authors_mod.json",read_text(ftr+'authors.json'))
+    # parse_json(ftr+'authors.json',4)
+    # update_json(ftr+'authors_mod.json','someObj',0,'prop3','val2_mod',True)
+    p = person.Person()
+    # serial_p = serialize(p)
+    # deserial_p = deserialize(serial_p)
+    # print(deserial_p.employers)
+    # print(obj_to_file(ftr+'bytes_obj.xyz',p))
+    # p_from_file = file_to_obj(ftr+'bytes_obj.xyz')
+    # print(p_from_file.employers)
+    
 if __name__ == "__main__":
     main()

@@ -76,7 +76,7 @@ Writing is simple: just use csv.writer, give the delimiter and anything else you
 
 XML files, use xml module. In particular, xml.etree.ElementTree. When using ET.parse(file), we don't need to use with open(...) as ... because parse gives us everything. We use the root to start at the base of the tree, and work our way through the branches (literally a metaphor of a tree). Each branch of course could have other branches. Each branch also could have leaves (items? elements?).
 
-ET.parse(file) gives us ElementTree[Element[str]], so a list of Element[s]. tree.getroot() gives Element[str]. From there, we can get attrib, keys, etc. So this is the level we want to recurse on?
+ET.parse(file) gives us ElementTree[Element[str]], so a list of Element[s]. tree.getroot() gives Element[str]. From there, we can get attrib, keys, etc. Since this is the first (root) element, all other elements will stem from it which we can access via the branches.
 
 The wording in code wasn't really standard, here is standard naming for XML/node based. But it's really obvious if you think more literally of the metaphor rather than in context of coding.
 
@@ -86,3 +86,13 @@ Parent Node: Parent that could have any amount of children, and whose children c
 Sibling Node: Nodes that have same parent (same indent)
 Leaf Node: Node without children (like leaf of a tree, nothing comes after)
 Internal Node: A node that has children. So a child node could be either an internal node or a leaf node, and it could also be a sibling node in either case. Think of family structure with grandparents and it'll make sense.
+
+To return the parse as a list of lists, each inner list representing the most tabbed in elements seems a bit annoying to maintain and work with. Instead, create a class/data structure to handle this? It would have a property for the outer most tab, and...wait, isn't this just nodes? Or the tree structure that xml files already have? Just use their data structure.
+
+Can use ... as an expression that does nothing, whereas pass is a statement that does nothing.
+
+json.load gives all data from file. json.loads (with s) gives all data from string. json.dumps gives string from data. json.dump (no s) writes data to file. Naming scheme could be better...
+
+Persisting objects just means saving internal state (python objects) to disk, database, over network, etc. The serialized object (using module pickle) is a bytes representation of the object.
+
+The pickle module basically has methods for handling byte data. Transforming from python object to bytes and vice versa, also supporting file reading and writing. Note to make sure you open files in byte mode depending on what you need. rb and wb, ab, etc.
