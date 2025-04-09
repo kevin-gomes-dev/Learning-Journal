@@ -1,0 +1,61 @@
+Module 2: Why Python?
+-----------------------------------------------------------------
+API modules: Flask, FastAPI, Bottle, Requests
+Website (full stack): Django, TurboGears, web2py
+App (CMS, ERP): Django CMS, WagTail, 
+Data Science: NumPy, Pandas, Matplotlib, Tensorflow, Keras, Scikit Learn
+Images/Comptuer Vision: Pillow, Pygal, OpenCV, Mahotas
+Applications: wxPython (GUI), PyGTK (GUI), Fire (CLI), Kivy (Mobile/Multi-touch pygame)
+
+Data science (big data, machine learning).
+Big data is basicially bigger data, like TB, PB, and EB (exabytes).
+Basically with how much data is generated in large datasets (2.5EB daily in one year), current systems can't handle it. So we need to make new systems that can handle any size. Most likely this involves making things not store big chunks in memory but instead handle piece by piece, reading it sequentially.
+
+Machine learning is just having the computer create the neural networks. So much data of graphs of relationships between data and expecting people to find the patterns or connections is getting less and less possible. So machine learning solves this by having an algorithm take in all the data and find relationships, patterns, etc. This involves spam email, network intrusion, OCR (Optical Character Recogition) which is just getting text from images and making it into strings that can then be used elsewhere, vision like face recogition, object tracking, etc.
+
+Education and learning. STEM skills, programming in general, and hardware learning like raspberry pi. Jupyter Notebooks (allows you to see how things work in an interactive way that you can change and see what happens)
+
+Machine scripting (like files, configs, process management/monitoring, applications). Like automating file moving, copying, deleting, changing configurations, maybe checking to see the highest memory usage process and warning the user if it is at a certain % of free RAM, etc
+
+Application scripting: writing code/interface that integrates in another application. Basically think like MP3Gain or something. It's a cmd line program that you can use with a given set of options. Many have written GUIs for it, and you could do same in python. You could also write a script to just run it for a folder with a given set of options and it'll batch run that. Or anything really, but the idea is you are taking an application and rather than running it manually, scripting to use it in whichever way.
+
+Module 3: What is Python?
+-----------------------------------------------------------------
+Python is high level, multi-paradigm, garbage collected, interpreted (line by line), dynamically typed (types are not static and predefined, any function can take any param of any type). Obviously this can create issues so programmers agree to a set of standards or hint at what type a function is expecting, but you can easily break stuff if you want to. Python is the "adult" language where it gives you full control and assumes you take care in not breaking things.
+
+C-like syntax are the curly brackets, ();, the semi-colons, etc. Python likes using significant whitespace, meaning whitespace actually determines things. They are opting for easier to read and understand. The big argument surrounds this usually, as if you have 6 indents, it can be annoying to find which level you're at instead of just counting the curly brackets. People also tend to indent anyway, so enforcing it as a part of the language...
+
+High level is just how abstracted you are from the machine code (the literal binary instructions). ASM, for example the 32-bit microsoft set of instructions, is a step up from machine code, allowing acronyms like MOV, ADD, JMP, etc to resemble the literal binary you would write to perform this. But you still have to take into account registers, the call stack, the cmp flag, etc. and manually adjust them as necessary. Allows you to write the most optimal code because high level ones translate/compile to machine code and often can't be the most efficient since it's automated in a general scope.
+
+Paradigm: Functional Programming (structured programming) is focus on the algorithms, stems from mathematical programming. Basically you can have one structure go down the "assembly line" and then have tons of functions handle it and the results of previous functions before it gets to the finished output. Alan J. Perlis (AI, Lisp and Algol, Ph. D. in mathematics, B.S. in Chemistry) says it's better to have 100 functions on one data structure than 10 on 10 structures. Can see how functional programming gets its roots from mathematics programming.
+
+Paradigm: Object-oriented Progarmming (structured programming) is making the algorithms (functions) and the data structure related as one "unit", and then many different units or objects work toogether. How to model objects, what data should they be concerned with (and what operations they should take care of), and how the objects will work together. Remember that everything in python is an object, so you're always working with them. But you could write functional programming style and just literally write statements and functions in a line of instructions to do something.
+
+CPU runs via its own ISA (Instruction Set Architecture). Basically language it understands, like English, etc. It can't understand the various languages we write (think of it as CPU is a primitive thing with very basic language of practicality, whereas our languages are abstracted conceptual languages). We need to somehow communicate with the CPU since it's the thing actually computing stuff. C++ for example compiles, takes a while to happen. Interpreted is like a live translator translating as you go. This means slower running, but quicker coding and seeing results of code. You can use a python compile however if you want, for example when you are done programming and wish to compile for end-users for faster running.
+
+Garbage collected: PCs today operate via "von Neumann Architecture", where computer composed of CPU, Memory (RAM), mass storage (like hard disk, SDD) and input and output devices. Architecture evolved to stored program computer, meaning programs are stored in the memory that the computer also operates on. So the computer can just quickly access memory and the entirety of the program. This leads to less disk reads/writes, enabling quicker computation and longer lifespans of mass sotrage, however the danger is if a program has memory leaks or is too large, it'll eat too much memory and the computer's general running will suffer since it has little memory to work with. Bottlenecks, etc. Garbage collection handles memory leaks by freeing up memory no longer in use so the computer can reuse or re-allocate as it needs.
+
+Languages like C/C++ say it's the responsibility of the programmer to handle memory cleanup (ASM is the same but it's because you are basically doing machine code and doing everything) Python thinks it should be the language's job. Having garbage collection allows no tedious bookkeeping on memory, avoid common mem leaks, prevent security issues and efficiently implement certain persistent data structs.
+
+Dynamically typed. More runtime errors since it doesn't check for typing, but allows for "duck typing". Basically, "if it walks like a duck and it quacks like a duck, it must be a duck". This is seen in a case where you have 2 classes have the same method (quack), and a function that takes an object and calls its quack method. Either class can be passed, whereas statically typed languages can only take one type that is explicitly defined.
+
+Module 4: Python Pros and Cons
+-----------------------------------------------------------------
+What can we do with standard library? Two philosophies: Minimal Standard Library (have to import a bunch, but pay only for what you use, no need to have an entire giant library for just printing a string, for example). Other is Comprehensive (can do pretty much anything from the get-go). Python is comprehensive, includes a ton of stuff you may have to do. File I/O, working with audio, interfaces, compression, collections, dates/times, etc. 
+
+Community driven through PEP (Python Enhancement Process). Basically like jira peer reviews for code changes, where someone will propose a change and will have users (coders of all kinds) review and comment on. Guido van Rossum will also look, the person who created Python. Benefits of this approach can be seen in pep 20 (peps.python.org/pep-0020/) which is "the zen of python". Bascially a set of statements like "if implementation is hard to explain, it's probably not good to implement" or "explicit is better than implicit" or "flat is better than nested". BDFL guiding principles down into 20 aphorisms. You can also see release notes for python versions which show all the PEPs, showing all comments on the feature, the abstract, specs, overview, etc. So python is super transparent, letting you see anything about it that you want. Has IRC, forums, newsletters, etc. and even has python software foundation that non-profit that promotes open-source related to python. They give grants to support python causes, host the Pycon, get together of python devs.
+
+3rd party libraries (modules). Basically use pip to install tons of 3rd party packages. People post to python package index (pypi.org) and you can use pip to just get them. This can literally be anything in python by anyone.
+
+pip install <mod> and then it auto goes into proper module structure. Tracks dependencies and installs/uninstalls dependencies of packages we are installing. We can track groups of packages as a single unit, and makes sure we use right versions. Think like requirements.txt where you can specify each module, its version (==2.3, or even >=2.0) and pip will get every single one, any dependencies each requires, and install all of them. If you need a dependency that is of a specific version, can specify in requirements. This on top of virtual environments literally lets you create custom "python versions" you could say, where a set of packages and specific version of python are dedicated to whatever your program is (hopefully large enough to warrent this, like Stable Diffusion).
+
+Here are some cons.
+
+1. Interpreted. Slow out of the box.
+
+2. Not native. High mem usage, no native security sandbox. Highly sought in servers, but desktop and mobile lags behind.
+
+3. Dynamic. Errors mostly at runtime, makes it hard to refactor and ensure code works after big updates.
+
+A solution would be CPython (compile). For dynamic, one way to solve is typing hints like so:
+func(a: int) -> list[int] says it takes an integer and returns a list of integers. Because it's just hinting, you can still pass whatever you want, but the coder told you what they want so now it's on you.
