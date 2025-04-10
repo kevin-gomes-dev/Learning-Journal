@@ -1,0 +1,22 @@
+Folder structure doesn't match demo
+
+import re module for regex. Use r'' (raw string) for easier, don't have to keep escaping chars
+Use the pattern with re. Get results via match.group(). bool(match) can be used as validation (did we return None)
+re.match starts at start of string. re.search searches entire string.
+\d - 0-9
+\w - a-z, A-Z
+\s - white space
+\S - Any non-whitespace char
++ - one or more, like \d+
+? - zero or one
+* - zero or more
+
+{n} - do this many times (1 would be the same as not having this)
+(pattern) - group pattern.
+
+Ex (\w+\s){2} to do that whole pattern twice (1 or more alphas followed by space)
+Ex (\d{1,3}\.){3}\d{1,3} can match IP, as it does 1-3 digits followed by '.', do that group 3 times, then final 1-3 digits
+
+When using re.findall, if you use groups, will return list of tuples of the group matches.
+To just get the main match (the first ele), you'd have to make as a group the entire pattern
+Then do [i[0] for i in re.findall(pat,str)]. It seems silly to need to do this, another way?
