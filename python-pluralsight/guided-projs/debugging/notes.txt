@@ -1,0 +1,31 @@
+Run seed_data.py first to set up data in data folder.
+
+pdb - module to help debug. Can be used where VS Code or other IDE cannot. Terminal debugging.
+https://docs.python.org/3/library/pdb.html
+
+Some useful tips
+l(ist) [first[,last]] - Print out all code surround the breakpoint (pdb.set_trace())
+Without arugments, list 11 lines around current line or continue with previous listing (meaning, repeated l statements will keep going 11 lines forward until EOF). With . as arg, list 11 lines (repeating this statement will repeat the same 11 lines, doesn't move) With one arg, list 11 lines around that line. WIth first and last defined list that range. If second arg is less than first, it is then the count (num of lines to list).
+
+Ex: l 23, 25 (lines 23 - 25) l . (11 lines) l 23, 12 (12 lines from line 23)
+ll (longlist) - List all source code for current func or stack frame. (since python 3.2)
+
+s(tep) - Take a step in (so goes inside functions that are called rather than over them)
+
+n(ext) - Take a step over, executing functions fully before going to next line.
+
+c(ontinue) - Execute until another breakpoint is found, useful for loops when you know only certain iterations fail but not others.
+
+j(ump) n - Set the next line to execute, only in bottom-most frame (so most outward frame in recursion). Can be used to go into the past or skip lines. Use l to see line numbers
+
+p exp - Evaluate exp and prinit its value. If you use print(exp), it will do python's print statement instead.
+
+pp exp - Same as p, but pretty print using pprint module.
+
+whatis exp - Type of exp
+
+source exp - Try to get source code of exp and display
+
+display exp - Display value of exp if it changed, see docs as it can be hard to grasp. Basically like "watch" of some IDEs, will execute every time it changes and show new and old value. Use undisplay exp to stop.
+
+alias [name [command]] - Basically like a macro, give it a name and every time you call it, will do the command. The command can have python code or pdb commands. Like so: alias l2-4 l 2,4 will make l2-4 print lines 2 - 4
