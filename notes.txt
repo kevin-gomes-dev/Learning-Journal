@@ -1,0 +1,3 @@
+VS Code:
+Make sure pytest is installed in venv to have the IDE show tests. Will be running with pytest.
+To see quickly a list of methods in file, F1 > remove the '>' char, use @:. Or just ctrl+shift+o and then @:

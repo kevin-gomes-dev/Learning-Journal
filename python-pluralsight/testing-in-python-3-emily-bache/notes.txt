@@ -1,0 +1,37 @@
+Unit tests should not use filesystem, database, or network (or anything that can take time/resources).
+unittest (python module) looks for 'text_' files to test.
+https://docs.python.org/3/library/unittest.html
+
+Tests should do an assertion in the end:
+assertEqual(x,y), assertTrue(bool), assertFalse(bool), assertRaises(exceptionType), etc.
+Basically it's saying to verify that these are actually what happens.
+
+Should make test cases self-sufficient - not needing anything from any other test.
+IDE like PyCharm allows test runner when needed, continuous integration allows automatic test run.
+
+With assertRaises, use like: with self.assertRaises(excType): ... this means if the lines within the with raise the exception you say it should, then the test will pass.
+Note that tests passing with raising exceptions means the code will actually raise the exception.
+
+Test suite is just collection of tests, organized based on what makes sense. Your unit tests shouldn't be concerned, as it's just more of a organization thing (example: all tests for phonebook ran in one test suite).
+
+Test runner is just that: a thing that runs your tests and displays results, failures, skips etc.
+
+If you are working on a test and want to skip, use @unittest.skip("Reason")
+With test case, if you keep having to run the same setup code, create setUp(self) method. It gets called before every test. Like setting up a ton of data or something. This method is already in unittest.TestCase, so override it with arg self as usual.
+
+Another is tearDown(self), which is done after every test case.
+
+In test class we use setup method to reduce code dupe.
+Test fixture - supporting code that creates and configures resources needed for test cases, then releases them.
+
+unittest.TestCase has 2 methods we can override: setUp and tearDown. Before each test, then test method, then tearDown. Most of the time tearDown isn't needed since garbage collection is already done. But if you make temp files or make database connection, tearDown can release. Even if test fails, tearDown still runs. If exception in setUp(), then test won't run and also tearDown doesn't run.
+
+-- So if setUp sets up resources and throws exception, they won't be released. --
+
+Don't design tests to simply test a method. If for example you have a ton of edge cases or otherwise that you want to test, don't bundle them all into one unit test. Bad design, info is too much now. Method names and tests should be as specific as you can so you could just look at name and result to know exactly what it's doing.
+
+Another reason not to have all cases in one test is if it fails earlier, the lines after don't run. So if other cases were going to test, now they don't so you have to keep fixing the earlier part before running again. This is only for the unittest framework, some can allow test to keep running
+
+3 main parts of test: Arrange, Act, Assert.
+
+After unit tests, should have performance tests. Timing.
