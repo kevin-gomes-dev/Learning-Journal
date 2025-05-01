@@ -99,9 +99,9 @@ def main(search_string_list: list[str] = [],output_json = '',output_csv = '',cou
                               'sold amount': sold})
                 rows.append([count,name,date,sold])
                 count += 1
-            header = ['id','Name','Date Sold','Sold Amount']
-                # Write
+    # Write
     if output_csv:
+        header = ['id','Name','Date Sold','Sold Amount']
         write_csv(header,rows,output_csv)
     if output_json:
         write_json(jsons,output_json)
