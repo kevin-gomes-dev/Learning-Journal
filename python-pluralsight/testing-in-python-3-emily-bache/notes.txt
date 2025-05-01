@@ -1,3 +1,5 @@
+Module 2 - Unit Test Vocabulary and Design
+-----------------------------------------------------------------
 Unit tests should not use filesystem, database, or network (or anything that can take time/resources).
 unittest (python module) looks for 'text_' files to test.
 https://docs.python.org/3/library/unittest.html
@@ -21,7 +23,7 @@ With test case, if you keep having to run the same setup code, create setUp(self
 
 Another is tearDown(self), which is done after every test case.
 
-In test class we use setup method to reduce code dupe.
+In test class we use setup method to reduce code dupe. Use setUpClass with @classmethod and cls as param to set anything up once before all tests are run, not individually like setUp.
 Test fixture - supporting code that creates and configures resources needed for test cases, then releases them.
 
 unittest.TestCase has 2 methods we can override: setUp and tearDown. Before each test, then test method, then tearDown. Most of the time tearDown isn't needed since garbage collection is already done. But if you make temp files or make database connection, tearDown can release. Even if test fails, tearDown still runs. If exception in setUp(), then test won't run and also tearDown doesn't run.
@@ -35,3 +37,140 @@ Another reason not to have all cases in one test is if it fails earlier, the lin
 3 main parts of test: Arrange, Act, Assert.
 
 After unit tests, should have performance tests. Timing.
+
+Module 3 - Using Pytest
+-----------------------------------------------------------------
+unittest is port of JUnit for Java, created by Kent Beck and Erich Gamma in 1997. unittest came in 2001 python 2.1
+pytest is not included in python dist. Get using pip, ex pip install -U pytest (-U is for update)
+
+With unittest, you have to inherit unittest.TestCase in a class, must name methods name test_..., and expected to use methods like assertEqual, predating PEP 8 style guide of naming things like method_name_o
+
+With pytest, no need to import or inherit, just follow test_... and use "assert <exe>". It also gives a ton of info related to the failure.
+
+If you want to assert raise exception or use fixtures, need to import pytest. Exception:
+with pytest.raises(Exception):
+    <exp>
+
+<exp> expected to raise the exception
+
+unittest: setUp and tearDown.
+pytest: Test Case indicates resource it needs in arg list. pytest looks for Test Fixture and defines what the resource is there. Like so:
+
+@pytest.fixture
+def some_string():
+    return 'foo'
+
+def test_need(some_string):
+    pass
+
+A kind of dependency injection. Now test cases can use the param gotten from the fixture func ('foo')
+
+https://docs.pytest.org/en/6.2.x/fixture.html for fixture info
+
+pytest tearDown is done by using yield in the fixture. Note only one yield can be present, and any code after is run after the test is done.
+Fixtures can be chained. If the fixture func itself has a param, then another fixture func can be run to provide that resource.
+
+Use --fixtures option of pytest to see all fixture funcs (including ones you didn't define)
+
+Parametrized test (@pytest.mark.parametrize) misspells parameterize takes params, 1st being string describing additional params, 2nd is list/iterable of data to use as params.
+
+@pytest.mark.parametrize('entry1,entry2,is_consistent',[
+    (('Bob','12345'),('Jen','32411'),True)
+])
+def test_is_consistent(entry1,entry2,is_consistent):
+    # Then could do book.add(*entry1) ...
+
+* can be used to unpack var. Like so:
+a = (3,4)
+def func(a,b):
+    return a + b
+
+func(*a) # Returns 3 + 4 = 7
+
+Parametrized tests are mainly to avoid duplication when the "act" part is identical besides data.
+
+Organizing test code in large projects.
+
+Generally, all code should be in src folder. Tests go in test folder. Fixture configs for pytest knows to look for them in conftest.py. So can place fixtures there.
+A test that is slow, or known to do something that would take time, can be marked @pytest.mark.slow. Can add this to a file at the root level called pytest.ini.
+https://docs.pytest.org/en/stable/reference/customize.html
+
+An example:
+
+[pytest]
+adopts = --strict-markers
+markers =
+    slow: Run tests that use data from file (deselect with '-m "not slow"')
+
+Thus when running, to skip that test, use: pytest -m "not slow"
+strict-markers makes it only detect markers on the list. Otherwise will give error.
+
+To get all markers (first one being ones you define): pytest --markers
+A skip marker is @pytest.mark.skip('reason') similar to unittest skip.
+
+@pytest.mark.skipif() can be used to skip if condition is true. An example to run only on python 3.6 or higher:
+
+@pytest.mark.skipif(sys.version_info < (3,6) reason="requires python3.6 or higher").
+
+Module 4: Testing By Developers: Why and When
+-----------------------------------------------------------------
+Test driven is basically write test, make it pass (change code), refactor, then keep doing this. Usually devs don't like because not used to it and takes skill to foresee the design (needs strong design and will expose weak ones when writing tests).
+
+capsys in param of test is pytest fixture, gives output in stdout and stderr. Can use like capsys.readouterr()
+
+Can do CI (CD/CI) to ensure tests are regularly run so anyone changing code will already have tests ran before and after changes. Mainly because people forget.
+
+Module 5: Using Test Doubles
+-----------------------------------------------------------------
+Stubs
+Fakes
+Dummies
+Spies
+Mocks
+
+Should use double when unit has dependency on other code and don't want to use the real code.
+Named after Stunt Double.
+
+xunit test patterns written by Gerard Meszaros introduced term Test Double. Many people just use mock.
+
+Stub - When class A uses instance of class B, but you want to not depend on class B. One way is to go where it uses class B and maybe redefine it elsewhere. Example: Uses it in init, make it a param of init then create the class in the test code, copying the same method signature so when original code calls it. Then init the class with param new inst of your custom class, and do the method you want to check.
+
+Another way is to use unittest.Mock, passing in a class name. Like stub = unittest.Mock(Sensor). Then you can just redefine stuff in the class without actually making a class. Like so:
+
+stub = unittest.Mock(Sensor)
+stub.sample_pressure.return_value = 21.0
+
+Now when that method is called anywhere in the test, it will return 21.0
+
+Fake - Like a stub. Basically a fake object. For example if testing file functions, can use io.StringIO(text). Then that is thought of as a file descriptor and can be used in that context (readline, read, etc). 
+
+Difference between fake and stub is a fake has actual implementation. Can use to replace a database with some in-memory db or a web server with some lightweight server.
+
+Dummy - Weird. When you need to pass something but the test will not use it. So usually pass None if the class you're using requires it. Though it is a "design smell" (detects bad design) as you couold have the param have a default of None to prevent the need of Dummies.
+
+Mocks and Spies do the same that stubs do. Big diff is they make assertions about what happens in the test case.
+
+Asserts:
+Return Value: Obvious one, check a func or method returns what we expect.
+State Change: Check side effects. Did a method change what we think should have been changed, like a db add or remove?
+Method Call: Checks that a method got called at all. Uses mock or spy.
+
+Spy - Similar to stub, but has implementation. So you can create a class and define methods that are the same as another, but in those methods, do different implementation. So whenever calling code calls a method, it will now use the spy's method instead. Example:
+
+A class has as a param another class. It then uses a method from that class. Our spy class in test code would have a method of the same name. Then when we pass a class into the original class, pass in our spy. The spy then has the method it expects, but different implementation. Thus we can use the effects of the original code but check on anything we'd like in the spy implementation.
+
+Another way is to use unittest mocks. For example:
+
+cls = unittest.mock.Mock()
+expected_calls = [
+    unittest.mock.call(...)
+]
+cls.func.assert_has_calls(expected_calls)
+
+The stuff in expected calls would be whatever params the original func or method uses. In the example, we have user,msg. So it would be unittest.mock.call('john','hello'). We can add as many as we'd like, and the assert_has_calls would do the method with those params?
+
+So a spy records the calls to methods and we can use to make sure the calls happen as they should with the params that should be the case.
+
+Mock - A class where you set up in advance with expected calls, and if they don't, raise an error (RuntimeError). So the mock knows what methods are expected to call, and fails if the calls are incorrect. Almost same implementation as spy.
+
+Difference is mock is told in advance what methods will be called with what args. Spy is raising error after in assert. The mock raises an error as soon as the method call isn't what it expected.
